@@ -96,6 +96,9 @@ interface Language {
 			Connected: () => string;
 			NotConnected: () => string;
 		};
+		Proposal: {
+			Start: () => string;
+		}
 	};
 }
 
