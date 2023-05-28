@@ -1,5 +1,5 @@
 import { PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
-import {State} from "../../declarations/states";
+import { State } from '../../declarations/states';
 
 export function stateOption(option){
 	const states = Object.entries(State);
@@ -7,9 +7,10 @@ export function stateOption(option){
 		.setDescription('USA states.')
 		.setChoices(
 			// FIXME: Get around the hard limit of 25 choices, as we have 50 states + 7 other
-			...states.map(it => ({name: it[0], value: it[1]})).slice(0, 25)
+			...states.map(it => ({ name: it[0], value: it[1] })).slice(0, 25)
 		)
 }
+
 export default {
 	data: new SlashCommandBuilder()
 		.setName('proposal')
