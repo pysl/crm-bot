@@ -1,36 +1,40 @@
-import { Locale, LocaleString } from 'discord.js';
+import { Locale } from 'discord.js';
+import {
+	Constructor, HelpInfoProperties, LocalizedHelpInfo 
+} from '../util';
 
-type LocalizedHelpInfo = Partial<Record<LocaleString, string>>;
+/**
+ * Add Help infor to an object class
+ * @param Base the object beeing extended
+ * @returns the Base object with the added helpInfo methods
+ */
+export function addHelpInfo<T extends Constructor>(Base: T) {
+	return class extends Base implements HelpInfoProperties {
+		/**
+		 * Titles for help Embed
+		 */
+		protected helpTitles: LocalizedHelpInfo = {};
 
-interface HelpInfoProperties {
-	helpTitle: LocalizedHelpInfo;
-	helpDescription: LocalizedHelpInfo;
-	setHelpTitleLocalizations(localizedTitle: LocalizedHelpInfo): this;
-	setHelpDescriptionLocalizations(localizedDescriptions: LocalizedHelpInfo): this;
-	getHelpInfo(locale: Locale): { title: string; description: string };
-}
+		/**
+		 * Descriptions for help Embed
+		 */
+		protected helpDescriptions: LocalizedHelpInfo = {};
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const Mixin = <T extends new (...args: any[]) => object>(Base: T) =>
-	class extends Base implements HelpInfoProperties {
-		helpTitle: LocalizedHelpInfo = {};
-
-		helpDescription: LocalizedHelpInfo = {};
-
-		setHelpTitleLocalizations(localizedTitle: LocalizedHelpInfo) {
-			Object.assign(this.helpTitle, localizedTitle);
+		public setHelpTitleLocalizations(localizedTitle: LocalizedHelpInfo) {
+			Object.assign(this.helpTitles, localizedTitle);
 			return this;
 		}
 
-		setHelpDescriptionLocalizations(localizedDescriptions: LocalizedHelpInfo) {
-			Object.assign(this.helpDescription, localizedDescriptions);
+		public setHelpDescriptionLocalizations(localizedDescriptions: LocalizedHelpInfo) {
+			Object.assign(this.helpDescriptions, localizedDescriptions);
 			return this;
 		}
 
-		getHelpInfo(locale: Locale): { title: string; description: string } {
+		public getHelpInfo(locale: Locale): { title: string; description: string } {
 			return {
-				title: this.helpTitle[locale.toString()],
-				description: this.helpDescription[locale.toString()]
+				title: this.helpTitles[locale.toString()],
+				description: this.helpDescriptions[locale.toString()]
 			};
 		}
 	};
+}

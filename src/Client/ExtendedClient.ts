@@ -72,7 +72,7 @@ export class ExtendedClient extends Client {
 	readonly useGuildCommands: boolean;
 
 	// Checks if the init function has run
-	private hasInitRun = false;
+	protected hasInitRun = false;
 
 	/**
 	 *

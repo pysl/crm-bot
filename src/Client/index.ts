@@ -16,4 +16,6 @@ export {
 
 export { ExtraColor, Logger, TimeStyles, tsNodeRun } from './util';
 
+export type { LocalizedHelpInfo } from './util';
+
 export type { TimeStyle } from './util';

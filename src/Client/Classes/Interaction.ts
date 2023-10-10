@@ -12,17 +12,20 @@ export class Interaction<E extends DiscordInteraction> {
 	readonly permission?: PermissionFlags;
 
 	// Method that to run when interaction happens
-	public execute: (interaction: E) => Promise<void>;
+	readonly execute: (interaction: E) => Promise<void>;
 
 	/**
 	 *
 	 * @param options
 	 * @returns
 	 */
-	constructor(options?: Partial<Interaction<E>>) {
-		if (!options) return;
+	constructor(options: Partial<Interaction<E>> = {}) {
 		if (options.name) this.name = options.name;
 		if (options.execute) this.execute = options.execute;
+	}
+
+	protected Mutable() {
+		return this as Mutable<typeof this>;
 	}
 
 	/**
@@ -31,7 +34,7 @@ export class Interaction<E extends DiscordInteraction> {
 	 * @returns The modified object
 	 */
 	public setName(name: string) {
-		(this as Mutable<Interaction<E>>).name = name;
+		this.Mutable().name = name;
 		return this;
 	}
 
@@ -41,7 +44,7 @@ export class Interaction<E extends DiscordInteraction> {
 	 * @returns The modified object
 	 */
 	public setExecute(execute: (interaction: E) => Promise<void>) {
-		this.execute = execute;
+		this.Mutable().execute = execute;
 		return this;
 	}
 }

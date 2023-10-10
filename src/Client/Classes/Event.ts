@@ -13,13 +13,16 @@ export class Event {
 	readonly once: boolean;
 
 	// Method to be run when the event occurs
-	public execute: (...args: any[]) => Promise<void>;
+	readonly execute: (...args: any[]) => Promise<void>;
 
-	constructor(options?: Partial<Event>) {
-		if (!options) return;
+	constructor(options: Partial<Event> = {}) {
 		if (options.name) this.name = options.name;
-		this.once = options.once === undefined ? false : options.once;
+		this.once = options.once || false;
 		if (options.execute) this.execute = options.execute;
+	}
+
+	protected Mutable() {
+		return this as Mutable<typeof this>;
 	}
 
 	/**
@@ -38,7 +41,7 @@ export class Event {
 	 * @returns The modified object
 	 */
 	public setName(input: keyof DiscordClientEvents) {
-		(this as Mutable<Event>).name = input;
+		this.Mutable().name = input;
 		return this;
 	}
 
@@ -48,7 +51,7 @@ export class Event {
 	 * @returns The modified object
 	 */
 	public setExecute(execute: (...args: any[]) => Promise<void>) {
-		this.execute = execute;
+		this.Mutable().execute = execute;
 		return this;
 	}
 }

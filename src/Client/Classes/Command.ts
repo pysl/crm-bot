@@ -1,10 +1,7 @@
 import {
-	AutocompleteInteraction,
-	ChatInputCommandInteraction,
-	ContextMenuCommandBuilder,
-	ContextMenuCommandInteraction,
-	SlashCommandBuilder
+	AutocompleteInteraction, ChatInputCommandInteraction, ContextMenuCommandInteraction 
 } from 'discord.js';
+import { ExtendedContextMenuCommandBuilder, ExtendedSlashCommandBuilder } from '.';
 import {
 	ChatInputCommandBuilders, Mutable, ReturnableInteraction 
 } from '../util';
@@ -13,9 +10,13 @@ import {
  * Slash command or context command
  */
 export class Command<
-	TypeBuilder extends ChatInputCommandBuilders | ContextMenuCommandBuilder,
+	TypeBuilder extends ChatInputCommandBuilders | ExtendedContextMenuCommandBuilder,
 	TypeInteraction extends ChatInputCommandInteraction | ContextMenuCommandInteraction
 > {
+	protected Mutable() {
+		return this as Mutable<typeof this>;
+	}
+
 	// The constructor for the registration for the command
 	readonly builder: TypeBuilder;
 
@@ -42,7 +43,7 @@ export class Command<
 	 * @returns The modified object
 	 */
 	public setGlobal(isGlobal: boolean): this {
-		(this as Mutable<Command<TypeBuilder, TypeInteraction>>).isGlobal = isGlobal;
+		this.Mutable().isGlobal = isGlobal;
 		return this;
 	}
 
@@ -52,7 +53,7 @@ export class Command<
 	 * @returns The modified object
 	 */
 	public setExecute(execute: (interaction: TypeInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction): this {
-		(this as Mutable<Command<TypeBuilder, TypeInteraction>>).execute = execute;
+		this.Mutable().execute = execute;
 		return this;
 	}
 }
@@ -65,7 +66,7 @@ export class ChatInputCommand extends Command<ChatInputCommandBuilders, ChatInpu
 	 * Runs when client receives and Autocomplete interaction
 	 * @param interaction Autocomplete interaction received by the client
 	 */
-	public autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
+	readonly autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
 
 	constructor(options: Partial<ChatInputCommand> = {}) {
 		super(options);
@@ -77,12 +78,12 @@ export class ChatInputCommand extends Command<ChatInputCommandBuilders, ChatInpu
 	 * @param input Slah command builder or callback
 	 * @returns The modified object
 	 */
-	public setBuilder(input: SlashCommandBuilder | ((subcommandBuilder: SlashCommandBuilder) => ChatInputCommandBuilders)): this {
+	public setBuilder(input: ExtendedSlashCommandBuilder | ((subcommandBuilder: ExtendedSlashCommandBuilder) => ChatInputCommandBuilders)): this {
 		if (typeof input === 'function') {
-			(this as Mutable<ChatInputCommand>).builder = input(new SlashCommandBuilder());
+			this.Mutable().builder = input(new ExtendedSlashCommandBuilder());
 		}
 		else {
-			(this as Mutable<ChatInputCommand>).builder = input;
+			this.Mutable().builder = input;
 		}
 		return this;
 	}
@@ -93,25 +94,25 @@ export class ChatInputCommand extends Command<ChatInputCommandBuilders, ChatInpu
 	 * @returns The modified object
 	 */
 	public setAutocomplete(autocomplete: (interaction: AutocompleteInteraction) => Promise<void>) {
-		this.autocomplete = autocomplete;
+		this.Mutable().autocomplete = autocomplete;
 		return this;
 	}
 }
 
-export class ContextMenuCommand extends Command<ContextMenuCommandBuilder, ContextMenuCommandInteraction> {
+export class ContextMenuCommand extends Command<ExtendedContextMenuCommandBuilder, ContextMenuCommandInteraction> {
 	/**
 	 * Set the Context Menu command builder method
 	 * @param input Context Menu command builder or callback
 	 * @returns The modified object
 	 */
-	public setBuilder(input: ContextMenuCommandBuilder | ((subcommandBuilder: ContextMenuCommandBuilder) => ContextMenuCommandBuilder)): this {
-		const mutableCommand = this as Mutable<ContextMenuCommand>;
-
+	public setBuilder(
+		input: ExtendedContextMenuCommandBuilder | ((subcommandBuilder: ExtendedContextMenuCommandBuilder) => ExtendedContextMenuCommandBuilder)
+	): this {
 		if (typeof input === 'function') {
-			mutableCommand.builder = input(new ContextMenuCommandBuilder());
+			this.Mutable().builder = input(new ExtendedContextMenuCommandBuilder());
 		}
 		else {
-			mutableCommand.builder = input;
+			this.Mutable().builder = input;
 		}
 		return this;
 	}

@@ -7,14 +7,14 @@ import {
 	SlashCommandSubcommandGroupBuilder
 } from 'discord.js';
 
-import { Mixin } from './Mixin';
+import { addHelpInfo } from './Mixin';
 
-export class ExtendedContextMenuCommandBuilder extends Mixin(ContextMenuCommandBuilder) {}
+export class ExtendedContextMenuCommandBuilder extends addHelpInfo(ContextMenuCommandBuilder) {}
 
-export class ExtendedSlashCommandSubcommandBuilder extends Mixin(SlashCommandSubcommandBuilder) {}
+export class ExtendedSlashCommandSubcommandBuilder extends addHelpInfo(SlashCommandSubcommandBuilder) {}
 
-export class ExtendedSlashCommandSubcommandGroupBuilder extends Mixin(SlashCommandSubcommandGroupBuilder) {
-	private subcommandBuilders = new Collection<string, ExtendedSlashCommandSubcommandBuilder>();
+export class ExtendedSlashCommandSubcommandGroupBuilder extends addHelpInfo(SlashCommandSubcommandGroupBuilder) {
+	protected subcommandBuilders = new Collection<string, ExtendedSlashCommandSubcommandBuilder>();
 
 	public addSubcommand(
 		input: ExtendedSlashCommandSubcommandBuilder | ((subcommandGroup: ExtendedSlashCommandSubcommandBuilder) => ExtendedSlashCommandSubcommandBuilder)
@@ -23,14 +23,16 @@ export class ExtendedSlashCommandSubcommandGroupBuilder extends Mixin(SlashComma
 
 		this.subcommandBuilders.set(command.name, command);
 
-		return super.addSubcommand(input);
+		super.addSubcommand(input);
+
+		return this;
 	}
 }
 
-export class ExtendedSlashCommandBuilder extends Mixin(SlashCommandBuilder) {
-	private subcommandGroupBuilders = new Collection<string, ExtendedSlashCommandSubcommandGroupBuilder>();
+export class ExtendedSlashCommandBuilder extends addHelpInfo(SlashCommandBuilder) {
+	protected subcommandGroupBuilders = new Collection<string, ExtendedSlashCommandSubcommandGroupBuilder>();
 
-	private subcommandBuilders = new Collection<string, ExtendedSlashCommandSubcommandBuilder>();
+	protected subcommandBuilders = new Collection<string, ExtendedSlashCommandSubcommandBuilder>();
 
 	public addSubcommandGroup(
 		input:
@@ -38,9 +40,12 @@ export class ExtendedSlashCommandBuilder extends Mixin(SlashCommandBuilder) {
 			| ((subcommandGroup: ExtendedSlashCommandSubcommandGroupBuilder) => ExtendedSlashCommandSubcommandGroupBuilder)
 	): Omit<ExtendedSlashCommandBuilder, Exclude<keyof SharedSlashCommandOptions, 'options'>> {
 		const group = typeof input === 'function' ? input(new ExtendedSlashCommandSubcommandGroupBuilder()) : input;
+
 		this.subcommandGroupBuilders.set(group.name, group);
 
-		return super.addSubcommandGroup(input) as Omit<ExtendedSlashCommandBuilder, Exclude<keyof SharedSlashCommandOptions, 'options'>>;
+		super.addSubcommandGroup(input);
+
+		return this as Omit<ExtendedSlashCommandBuilder, Exclude<keyof SharedSlashCommandOptions, 'options'>>;
 	}
 
 	public addSubcommand(
@@ -50,6 +55,8 @@ export class ExtendedSlashCommandBuilder extends Mixin(SlashCommandBuilder) {
 
 		this.subcommandBuilders.set(command.name, command);
 
-		return super.addSubcommand(input) as Omit<ExtendedSlashCommandBuilder, Exclude<keyof SharedSlashCommandOptions, 'options'>>;
+		super.addSubcommand(input);
+
+		return this as Omit<ExtendedSlashCommandBuilder, Exclude<keyof SharedSlashCommandOptions, 'options'>>;
 	}
 }

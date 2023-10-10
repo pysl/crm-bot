@@ -1,17 +1,24 @@
 import {
 	ChatInputCommandInteraction,
 	CommandInteraction,
-	ContextMenuCommandBuilder,
 	ContextMenuCommandInteraction,
 	InteractionResponse,
+	LocaleString,
 	Message,
-	SlashCommandBuilder,
-	SlashCommandSubcommandsOnlyBuilder
+	SharedSlashCommandOptions
 } from 'discord.js';
-import { Command } from '../Classes/Command';
+import {
+	Command, ExtendedContextMenuCommandBuilder, ExtendedSlashCommandBuilder 
+} from '../Classes';
 
+/**
+ * Make any opjects readonly properties writeable
+ */
 export type Mutable<T> = { -readonly [P in keyof T]: T[P] };
 
+/**
+ * Color values that can be referanced
+ */
 export declare const ExtraColor: {
 	EmbedGray: 0x2b2d31;
 	PVBlue: 0x2986cc;
@@ -19,13 +26,49 @@ export declare const ExtraColor: {
 	PVOrange: 0xe54c3c;
 };
 
+/**
+ * posible command return types
+ */
 export type ChatInputCommandBuilders =
-	| SlashCommandBuilder
-	| SlashCommandSubcommandsOnlyBuilder
-	| Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>;
+	| ExtendedSlashCommandBuilder
+	| Omit<ExtendedSlashCommandBuilder, Exclude<keyof SharedSlashCommandOptions, 'options'>>
+	| Omit<ExtendedSlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>;
 
+/**
+ * Posible interaction return types
+ */
 export type ReturnableInteraction = void | CommandInteraction | ContextMenuCommandInteraction | InteractionResponse | Message;
 
-export type TypeCommand = Command<ChatInputCommandBuilders | ContextMenuCommandBuilder, ChatInputCommandInteraction | ContextMenuCommandInteraction>;
+/**
+ * TypeCommand definition
+ */
+export type TypeCommand = Command<ChatInputCommandBuilders | ExtendedContextMenuCommandBuilder, ChatInputCommandInteraction | ContextMenuCommandInteraction>;
 
+/**
+ * Discord time Style definition
+ */
 export type TimeStyle = 'd' | 'D' | 't' | 'T' | 'f' | 'F' | 'R';
+
+/**
+ * Discord TimeStyles
+ */
+export declare const TimeStyles: {
+	ShortDate: 'd';
+	LongDatez: 'D';
+	ShortTime: 't';
+	LongTime: 'T';
+	ShortDateTime: 'f';
+	LongDateTime: 'F';
+	RelativeTime: 'R';
+};
+
+/**
+ * LocilzationHelpInfo type
+ */
+export type LocalizedHelpInfo = Partial<Record<LocaleString, string>>;
+
+/**
+ * Definition of a constructor
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Constructor = new (...args: any[]) => object;
