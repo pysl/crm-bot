@@ -14,18 +14,24 @@ export default new ChatInputCommand()
 			.setDescriptionLocalizations(localization('command-description', ns))
 			.setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles | PermissionFlagsBits.ManageChannels | PermissionFlagsBits.ManageEvents)
 			.setDMPermission(false)
+			.setHelpTitleLocalizations(localization('command-help-title', ns))
+			.setHelpDescriptionLocalizations(localization('command-help-description', ns))
 			.addSubcommandGroup((subcommandGroup) =>
 				subcommandGroup
 					.setName(t({ key: 'region-name', ns }))
 					.setDescription(t({ key: 'region-description', ns }))
 					.setNameLocalizations(localization('region-name', ns))
 					.setDescriptionLocalizations(localization('region-description', ns))
+					.setHelpTitleLocalizations(localization('region-help-title', ns))
+					.setHelpDescriptionLocalizations(localization('region-help-description', ns))
 					.addSubcommand((subcommand) =>
 						subcommand
 							.setName(t({ key: 'region-role-name', ns }))
 							.setDescription(t({ key: 'region-role-description', ns }))
 							.setNameLocalizations(localization('region-role-name', ns))
 							.setDescriptionLocalizations(localization('region-role-description', ns))
+							.setHelpTitleLocalizations(localization('region-role-help-title', ns))
+							.setHelpDescriptionLocalizations(localization('region-role-help-description', ns))
 							.addUserOption((option) =>
 								option
 									.setName(t({ key: 'region-role-user-name', ns }))

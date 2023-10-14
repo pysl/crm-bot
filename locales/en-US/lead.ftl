@@ -99,3 +99,9 @@ log-message-name = log-messages
 log-message-description = Generate TXT file of message content
 log-message-channel = channel
 log-message-channel-description = Target Channel
+
+## Help
+command-help-title = State Lead Commands
+command-help-description = Commands for State Leads
+region-help-title = Region Commands
+region-help-description = Commands for Region Leads

@@ -13,6 +13,7 @@ export default new ChatInputCommand()
 			.setNameLocalizations(localization('command-name', ns))
 			.setDescriptionLocalizations(localization('command-description', ns))
 			.setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
+
 			.addUserOption((option) =>
 				option
 					.setName(t({ key: 'user-option-name', ns }))

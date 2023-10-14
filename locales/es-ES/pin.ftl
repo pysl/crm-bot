@@ -1,4 +1,4 @@
-command-name = Ancla Mensaje
+command-name = ancla-mensaje
 Success = Exitosamente {$pinned} anclado el mensaje {$url}!
 Error = Se produjo un error al anclar el mensaje {$url}.
 CannotPin = No se puede anclar el mensaje {$url}.
